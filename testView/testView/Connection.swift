@@ -54,6 +54,8 @@ class Connection: UIView, NSURLConnectionDelegate {
     //NSURLConnection delegate method
     func connectionDidFinishLoading(connection: NSURLConnection!) {
         NSLog("connectionDidFinishLoading");
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.postNotificationName("webDataReceived", object: nil)
     }
 
 }

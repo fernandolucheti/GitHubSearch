@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 class NetworkController: UIViewController {
+    let user = User()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,14 +19,18 @@ class NetworkController: UIViewController {
     
     
     func searchRepository() -> NSMutableArray {
-        //usuario e senha git
-        let username = ""
-        let password = ""
         
         let conn = Connection()
-        conn.connect(username, password: password, urlBusca: "https://api.github.com/users/mackmobile/repos")
-        
+        conn.connect(user.username, password: user.password, urlBusca: "https://api.github.com/users/fernandolucheti/repos")
         return conn.arrayResponse
+    }
+    
+    func searchForkedRepositories(masterName: String, yourName: String){
+        let connection = Connection()
+        
+        connection.connect(user.username, password: user.password, urlBusca: "https://api.github.com/users/fernandolucheti/repos")
+        
+        
     }
     
     

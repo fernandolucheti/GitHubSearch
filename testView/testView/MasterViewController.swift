@@ -13,6 +13,8 @@ class MasterViewController: UITableViewController {
     var detailViewController: DetailViewController? = nil
     var objects = [AnyObject]()
     var repos: NSMutableArray!
+    var loadingView: UIView?
+    var activityIndicator: UIActivityIndicatorView?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,6 +26,12 @@ class MasterViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.addObserver(self, selector: "reloadData", name: "webDataReceived", object: nil)
+        
+        self.loading()
+        
         // Do any additional setup after loading the view, typically from a nib.
         self.navigationItem.leftBarButtonItem = self.editButtonItem()
 
@@ -40,6 +48,41 @@ class MasterViewController: UITableViewController {
             //repos = networkController.searchRepository("mackmobile")
             repos = networkController.searchRepository()
         }
+        
+    }
+    func loading(){
+        
+        if loadingView == nil{
+            loadingView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height))
+            loadingView?.center = CGPointMake(self.view.center.x, self.view.center.y)
+            loadingView?.backgroundColor = UIColor.blackColor()
+            loadingView?.alpha = 0.5
+            
+        }
+        self.view.addSubview(loadingView!)
+        if activityIndicator == nil {
+
+            activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
+            activityIndicator!.alpha = 1
+            activityIndicator!.hidesWhenStopped = false
+            activityIndicator!.center = CGPointMake(self.view.center.x, self.view.center.y)
+            
+        }
+        self.loadingView!.addSubview(activityIndicator!)
+        self.activityIndicator!.startAnimating()
+        
+    }
+    
+    
+    func finishedLoading(){
+        self.loadingView?.removeFromSuperview()
+        self.activityIndicator!.removeFromSuperview()
+    }
+    
+    
+    func reloadData(){
+        self.tableView.reloadData()
+        self.finishedLoading()
     }
 
     override func didReceiveMemoryWarning() {

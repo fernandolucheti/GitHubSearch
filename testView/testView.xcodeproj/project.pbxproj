@@ -17,6 +17,7 @@
 		8B610A671AEE80F9007340CF /* testViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B610A661AEE80F9007340CF /* testViewTests.swift */; };
 		8B610A711AEE8114007340CF /* NetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B610A701AEE8114007340CF /* NetworkController.swift */; };
 		8B610A731AEE96FD007340CF /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B610A721AEE96FD007340CF /* SwiftyJSON.swift */; };
+		8B9C9B7C1AEFEA6D00316490 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9C9B7B1AEFEA6D00316490 /* User.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		8B610A661AEE80F9007340CF /* testViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testViewTests.swift; sourceTree = "<group>"; };
 		8B610A701AEE8114007340CF /* NetworkController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkController.swift; sourceTree = "<group>"; };
 		8B610A721AEE96FD007340CF /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
+		8B9C9B7B1AEFEA6D00316490 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +94,7 @@
 				8B610A521AEE80F9007340CF /* DetailViewController.swift */,
 				8B610A541AEE80F9007340CF /* Main.storyboard */,
 				8B610A4C1AEE80F9007340CF /* Supporting Files */,
+				8B9C9B7B1AEFEA6D00316490 /* User.swift */,
 			);
 			path = testView;
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 				8B610A511AEE80F9007340CF /* MasterViewController.swift in Sources */,
 				8B610A731AEE96FD007340CF /* SwiftyJSON.swift in Sources */,
 				8B610A4F1AEE80F9007340CF /* AppDelegate.swift in Sources */,
+				8B9C9B7C1AEFEA6D00316490 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
