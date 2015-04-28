@@ -37,7 +37,8 @@ class MasterViewController: UITableViewController {
             
             var networkController = NetworkController()
             //repos = networkController.searchForkedRepositories("mackmobile", yourName: "fernandolucheti")
-            repos = networkController.searchRepository("fernandolucheti")
+            //repos = networkController.searchRepository("mackmobile")
+            repos = networkController.searchRepository()
         }
     }
 
