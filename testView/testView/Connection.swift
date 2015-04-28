@@ -13,7 +13,7 @@ class Connection: UIView, NSURLConnectionDelegate {
     var data = NSMutableData()
     var arrayResponse = NSMutableArray()
     
-    func connect(username: String, password: String) {
+    func connect(username: String, password: String, urlBusca: String) {
         // set up the base64-encoded credentials
         
         let loginString = NSString(format: "%@:%@", username, password)
@@ -21,7 +21,7 @@ class Connection: UIView, NSURLConnectionDelegate {
         let base64LoginString = loginData.base64EncodedStringWithOptions(nil)
         
         // create the request
-        let url = NSURL(string: "https://api.github.com/users/mackmobile/repos")
+        let url = NSURL(string: urlBusca)
         let request = NSMutableURLRequest(URL: url!)
         request.HTTPMethod = "GET"
         request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")

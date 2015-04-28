@@ -23,7 +23,7 @@ class NetworkController: UIViewController {
         let password = ""
         
         let conn = Connection()
-        conn.connect(username, password: password)
+        conn.connect(username, password: password, urlBusca: "https://api.github.com/users/mackmobile/repos")
         
         return conn.arrayResponse
     }
