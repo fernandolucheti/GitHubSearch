@@ -21,7 +21,7 @@ class NetworkController: UIViewController {
     func searchRepository() -> NSMutableArray {
         
         let conn = Connection()
-        let array = conn.connect(user.username, password: user.password, urlBusca: "https://api.github.com/users/\(user.username)/repos")
+        let array = self.searchYourRepo()
         
         //println("\(array)")
         
@@ -45,13 +45,15 @@ class NetworkController: UIViewController {
                 }
             }
         }
-        
-        
-        
-        
         return arrayRepos
         
         
+    }
+    
+    func searchYourRepo() -> NSMutableArray{
+        let conn = Connection()
+        let array = conn.connect(user.username, password: user.password, urlBusca: "https://api.github.com/users/\(user.username)/repos")
+        return array;
     }
     
     

@@ -13,6 +13,7 @@ class MasterViewController: UITableViewController {
     var detailViewController: DetailViewController? = nil
     var objects = [AnyObject]()
     var repos: NSMutableArray!
+    var yourRepos: NSMutableArray!
     var loadingView: UIView?
     var activityIndicator: UIActivityIndicatorView?
 
@@ -27,8 +28,8 @@ class MasterViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: "reloadData", name: "webDataReceived", object: nil)
+        //let notificationCenter = NSNotificationCenter.defaultCenter()
+        //notificationCenter.addObserver(self, selector: "reloadData", name: "webDataReceived", object: nil)
         
         self.loading()
         
@@ -42,36 +43,36 @@ class MasterViewController: UITableViewController {
             self.detailViewController = controllers[controllers.count-1].topViewController as? DetailViewController
             
             
-            
             var networkController = NetworkController()
             //repos = networkController.searchForkedRepositories("mackmobile", yourName: "fernandolucheti")
             //repos = networkController.searchRepository("mackmobile")
-            repos = networkController.searchRepository()
-            
+            dispatch_async(dispatch_get_main_queue()) {
+                self.yourRepos = networkController.searchYourRepo()
+                self.repos = networkController.searchRepository()
+                self.reloadData()
+            }
             
 
         }
         
     }
-    override func viewDidAppear(animated: Bool) {
-        self.finishedLoading()
-    }
+    
     func loading(){
         
-        if loadingView == nil{
-            loadingView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height))
-            loadingView?.center = CGPointMake(self.view.center.x, self.view.center.y)
-            loadingView?.backgroundColor = UIColor.blackColor()
-            loadingView?.alpha = 0.5
+        if self.loadingView == nil{
+            self.loadingView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height))
+            self.loadingView?.center = CGPointMake(self.view.center.x, self.view.center.y)
+            self.loadingView?.backgroundColor = UIColor.blackColor()
+            self.loadingView?.alpha = 0.5
             
         }
-        self.view.addSubview(loadingView!)
-        if activityIndicator == nil {
+        self.view.addSubview(self.loadingView!)
+        if self.activityIndicator == nil {
 
-            activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
-            activityIndicator!.alpha = 1
-            activityIndicator!.hidesWhenStopped = false
-            activityIndicator!.center = CGPointMake(self.view.center.x, self.view.center.y)
+            self.activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
+            self.activityIndicator!.alpha = 1
+            self.activityIndicator!.hidesWhenStopped = false
+            self.activityIndicator!.center = CGPointMake(self.view.center.x, self.view.center.y)
             
         }
         self.loadingView!.addSubview(activityIndicator!)
@@ -119,16 +120,40 @@ class MasterViewController: UITableViewController {
     // MARK: - Table View
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return 2
+    }
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "Meus repositorios"
+        }else{
+            return "Forked from MackMobile"
+        }
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return repos.count
+        if repos == nil{
+            repos = NSMutableArray()
+        }
+        if yourRepos == nil{
+            yourRepos = NSMutableArray()
+        }
+        if section == 0 {
+            return yourRepos.count
+        }else{
+            return repos.count
+        }
+        
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! UITableViewCell
-        cell.textLabel!.text = repos.objectAtIndex(indexPath.row)["name"] as? String
+        
+        if indexPath.section == 0{
+            cell.textLabel!.text = yourRepos.objectAtIndex(indexPath.row)["name"] as? String
+        }else{
+            cell.textLabel!.text = repos.objectAtIndex(indexPath.row)["name"] as? String
+        }
         return cell
     }
     
