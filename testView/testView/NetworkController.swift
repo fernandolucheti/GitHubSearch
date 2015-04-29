@@ -21,25 +21,40 @@ class NetworkController: UIViewController {
     func searchRepository() -> NSMutableArray {
         
         let conn = Connection()
-        conn.connect(user.username, password: user.password, urlBusca: "https://api.github.com/users/fernandolucheti/repos")
-        return conn.arrayResponse
-    }
-    
-    func searchForkedRepositories(masterName: String, yourName: String){
-        let connection = Connection()
+        let array = conn.connect(user.username, password: user.password, urlBusca: "https://api.github.com/users/\(user.username)/repos")
         
-        connection.connect(user.username, password: user.password, urlBusca: "https://api.github.com/users/fernandolucheti/repos")
+        //println("\(array)")
         
         
+        
+        var arrayRepos = NSMutableArray()
+        
+        for var i=0; i < array.count; i++ {
+            let urlRepo = array[i]["url"] as! String
+            let conRepo = conn.connectOne(user.username, password: user.password, urlBusca: urlRepo)
+            
+            if let parent: AnyObject = conRepo["parent"] {
+                //println("\(parent)")
+                if let owner: AnyObject = parent["owner"] {
+                    //println("\(owner)")
+                    if let login: AnyObject = owner["login"] {
+                        if login as! String == "mackmobile" {
+                            arrayRepos.addObject(conRepo)
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+        
+        
+        return arrayRepos
+        
+        
     }
     
     
-    
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     
 }

@@ -10,10 +10,7 @@ import UIKit
 
 class Connection: UIView, NSURLConnectionDelegate {
     
-    var data = NSMutableData()
-    var arrayResponse = NSMutableArray()
-    
-    func connect(username: String, password: String, urlBusca: String) {
+    func connect(username: String, password: String, urlBusca: String) -> NSMutableArray {
         // set up the base64-encoded credentials
         
         let loginString = NSString(format: "%@:%@", username, password)
@@ -26,36 +23,43 @@ class Connection: UIView, NSURLConnectionDelegate {
         request.HTTPMethod = "GET"
         request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
         
-        let urlConnection = NSURLConnection(request: request, delegate: self)
-    }
-    
-    //NSURLConnection delegate method
-    func connection(connection: NSURLConnection, didFailWithError error: NSError) {
-        println("Failed with error:\(error.localizedDescription)")
-    }
-    
-    //NSURLConnection delegate method
-    func connection(didReceiveResponse: NSURLConnection!, didReceiveResponse response: NSURLResponse!) {
-        //New request so we need to clear the data object
-        self.data = NSMutableData()
-    }
-    
-    //NSURLConnection delegate method
-    func connection(connection: NSURLConnection!, didReceiveData data: NSData!) {
-        //Append incoming data
-        self.data.appendData(data)
+        var response: NSURLResponse?
+        var error: NSError?
         
-        let json = JSON(data: self.data)
-        for var i = 0; i < json.count; ++i{
-            self.arrayResponse.addObject(json[i].object)
+        var arrayResponse = NSMutableArray()
+        
+        //let urlConnection = NSURLConnection(request: request, delegate: self)
+        let urlData = NSURLConnection.sendSynchronousRequest(request, returningResponse: &response, error: &error)
+        if let dataURL = urlData as NSData! {
+            let json = JSON(data: dataURL)
+            for var i = 0; i < json.count; ++i{
+                arrayResponse.addObject(json[i].object)
+            }
         }
+        return arrayResponse
     }
     
-    //NSURLConnection delegate method
-    func connectionDidFinishLoading(connection: NSURLConnection!) {
-        NSLog("connectionDidFinishLoading");
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.postNotificationName("webDataReceived", object: nil)
+    func connectOne(username: String, password: String, urlBusca: String) -> NSDictionary {
+        // set up the base64-encoded credentials
+        
+        let loginString = NSString(format: "%@:%@", username, password)
+        let loginData: NSData = loginString.dataUsingEncoding(NSUTF8StringEncoding)!
+        let base64LoginString = loginData.base64EncodedStringWithOptions(nil)
+        
+        // create the request
+        let url = NSURL(string: urlBusca)
+        let request = NSMutableURLRequest(URL: url!)
+        request.HTTPMethod = "GET"
+        request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
+        
+        var response: NSURLResponse?
+        var error: NSError?
+        
+        let urlData = NSURLConnection.sendSynchronousRequest(request, returningResponse: &response, error: &error) as NSData!
+        let json = JSON(data: urlData)
+        
+        return json.object as! NSDictionary
     }
+
 
 }

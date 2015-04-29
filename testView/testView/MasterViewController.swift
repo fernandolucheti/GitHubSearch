@@ -47,8 +47,14 @@ class MasterViewController: UITableViewController {
             //repos = networkController.searchForkedRepositories("mackmobile", yourName: "fernandolucheti")
             //repos = networkController.searchRepository("mackmobile")
             repos = networkController.searchRepository()
+            
+            
+
         }
         
+    }
+    override func viewDidAppear(animated: Bool) {
+        self.finishedLoading()
     }
     func loading(){
         
