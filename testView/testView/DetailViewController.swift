@@ -11,6 +11,7 @@ import UIKit
 class DetailViewController: UIViewController {
 
     @IBOutlet weak var detailDescriptionLabel: UILabel!
+    @IBOutlet weak var badgesLabel: UILabel!
 
 
     var detailItem: AnyObject? {
@@ -19,7 +20,7 @@ class DetailViewController: UIViewController {
             self.configureView()
         }
     }
-
+    
     func configureView() {
         // Update the user interface for the detail item.
         if let detail: AnyObject = self.detailItem {
@@ -33,6 +34,19 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.configureView()
+        let net = NetworkController()
+        var detailName = String()
+        if let detail: AnyObject = self.detailItem {
+            if let label = self.detailDescriptionLabel {
+                detailName = detail["name"] as! String
+            }
+        }
+        let badges = net.searchBadges(detailName)
+        var text = ""
+        for badge in badges {
+            text = "\(text) \n \(badge)"
+        }
+        self.badgesLabel.text = text
     }
 
     override func didReceiveMemoryWarning() {

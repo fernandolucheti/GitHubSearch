@@ -42,15 +42,13 @@ class MasterViewController: UITableViewController {
             let controllers = split.viewControllers
             self.detailViewController = controllers[controllers.count-1].topViewController as? DetailViewController
             
-            
             var networkController = NetworkController()
             //repos = networkController.searchForkedRepositories("mackmobile", yourName: "fernandolucheti")
             //repos = networkController.searchRepository("mackmobile")
-            dispatch_async(dispatch_get_main_queue()) {
-                self.yourRepos = networkController.searchYourRepo()
+            //dispatch_async(dispatch_get_main_queue()) {
                 self.repos = networkController.searchRepository()
                 self.reloadData()
-            }
+            //}
             
 
         }
@@ -97,12 +95,6 @@ class MasterViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    func insertNewObject(sender: AnyObject) {
-        objects.insert(NSDate(), atIndex: 0)
-        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-        self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-    }
-
     // MARK: - Segues
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -120,63 +112,29 @@ class MasterViewController: UITableViewController {
     // MARK: - Table View
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return "Meus repositorios"
-        }else{
-            return "Forked from MackMobile"
-        }
+        return "Forked from MackMobile"
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if repos == nil{
-            repos = NSMutableArray()
-        }
-        if yourRepos == nil{
-            yourRepos = NSMutableArray()
-        }
-        if section == 0 {
-            return yourRepos.count
-        }else{
-            return repos.count
-        }
-        
+        return repos.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! UITableViewCell
         
-        if indexPath.section == 0{
-            cell.textLabel!.text = yourRepos.objectAtIndex(indexPath.row)["name"] as? String
-        }else{
-            cell.textLabel!.text = repos.objectAtIndex(indexPath.row)["name"] as? String
-        }
+        cell.textLabel!.text = repos.objectAtIndex(indexPath.row)["name"] as? String
+        
         return cell
     }
-    
-    
-    
-    
-    
-    
 
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
-        return true
+        return false
     }
-
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            objects.removeAtIndex(indexPath.row)
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-        }
-    }
-
 
 }
 
