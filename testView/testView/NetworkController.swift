@@ -69,7 +69,9 @@ class NetworkController: UIViewController {
             let userPull = conn.connectOne(user.username, password: user.password, urlBusca: urlPull)
             if let labels: AnyObject = userPull["labels"] as? NSArray {
                 for var i=0; i<labels.count; i++ {
-                    let bdg = labels[i]["name"] as! String
+                    var bdg = Badge()
+                    bdg.name = labels[i]["name"] as! String
+                    bdg.color = labels[i]["color"] as! String
                     badges.addObject(bdg)
                 }
             }
