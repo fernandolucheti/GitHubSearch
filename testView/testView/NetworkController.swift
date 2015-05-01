@@ -35,6 +35,12 @@ class NetworkController: UIViewController {
         return arrayRepos
     }
     
+    func searchCommits(nameRepo: String) -> NSMutableArray{
+        let conn = Connection()
+        let array = conn.connect(user.username, password: user.password, urlBusca: "https://api.github.com/repos/\(user.username)/\(nameRepo)/commits")
+        return array;
+    }
+    
     func searchYourRepo() -> NSMutableArray{
         let conn = Connection()
         let array = conn.connect(user.username, password: user.password, urlBusca: "https://api.github.com/users/\(user.username)/repos")

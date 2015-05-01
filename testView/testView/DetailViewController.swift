@@ -12,10 +12,12 @@ import UIKit
 
 class DetailViewController: UIViewController {
     
-    
+    var loadingView: UIView?
+    var activityIndicator: UIActivityIndicatorView?
 
     @IBOutlet weak var detailDescriptionLabel: UILabel!
     @IBOutlet weak var badgesLabel: UILabel!
+    @IBOutlet weak var commitsTextView: UITextView!
 
 
     var detailItem: AnyObject? {
@@ -23,6 +25,35 @@ class DetailViewController: UIViewController {
             // Update the view.
             self.configureView()
         }
+    }
+    
+    func loading(){
+        
+        if self.loadingView == nil{
+            self.loadingView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height))
+            self.loadingView?.center = CGPointMake(self.view.center.x, self.view.center.y)
+            self.loadingView?.backgroundColor = UIColor.blackColor()
+            self.loadingView?.alpha = 0.5
+            
+        }
+        self.view.addSubview(self.loadingView!)
+        if self.activityIndicator == nil {
+            
+            self.activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
+            self.activityIndicator!.alpha = 1
+            self.activityIndicator!.hidesWhenStopped = false
+            self.activityIndicator!.center = CGPointMake(self.view.center.x, self.view.center.y)
+            
+        }
+        self.loadingView!.addSubview(activityIndicator!)
+        self.activityIndicator!.startAnimating()
+        
+    }
+    
+    
+    func finishedLoading(){
+        self.loadingView?.removeFromSuperview()
+        self.activityIndicator!.removeFromSuperview()
     }
     
     func configureView() {
@@ -33,7 +64,7 @@ class DetailViewController: UIViewController {
             }
         }
     }
-
+    var isForked = false
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -45,36 +76,64 @@ class DetailViewController: UIViewController {
             if let label = self.detailDescriptionLabel {
                 detailName = detail["name"] as! String
             }
-        }
-        let badges = net.searchBadges(detailName)
-        var text = ""
-        
-        
-        
-        var myMutableString = NSMutableAttributedString()
-        
-        
-
-//        myMutableString.addAttribute(NSFontAttributeName, value: UIFont(name: "Georgia", size: 36.0)!, range: NSRange(location: 0, length: 1))
-//        myMutableString.addAttribute(NSStrokeColorAttributeName, value: UIColor.blueColor(), range:  NSRange(location: 0, length: 1))
-//        myMutableString.addAttribute(NSStrokeWidthAttributeName, value: 2, range: NSRange(location: 0, length: 1))
-        
-        //var initialPos:Int
-        var initialPos = 0
-        for var i = 0; i < badges.count; ++i{
-            let badge: Badge = badges.objectAtIndex(i) as! Badge
-            var name: NSString = badge.name
-            var color: UIColor = hexStringToUIColor(badge.color)
-            
-            var c = NSMutableAttributedString(string: name as String, attributes: [NSFontAttributeName: self.badgesLabel.font!])
-            myMutableString.appendAttributedString(c)
-            myMutableString.appendAttributedString(NSAttributedString(string: (String("\n"))))
-            myMutableString.addAttribute(NSBackgroundColorAttributeName, value: color, range:  NSRange(location: initialPos, length: name.length))
-            initialPos += name.length + 1
-            
+            if let forked: AnyObject = detail["fork"]{
+                isForked = forked as! Bool
+            }
         }
         
-        self.badgesLabel.attributedText = myMutableString
+        commitsTextView.text = ""
+        self.loading()
+        
+        dispatch_async(dispatch_get_main_queue()) {
+            if detailName != ""{
+                let commits = net.searchCommits(detailName)
+                
+                for var i = 0; i < commits.count; ++i{
+                    
+                    if let commit: AnyObject = commits.objectAtIndex(i)["commit"]{
+                        if let author: AnyObject = commit["author"]{
+                            if let authorName: AnyObject = author["name"]{
+                                self.commitsTextView.insertText(authorName as! String)
+                                self.commitsTextView.insertText("\n")
+                            }
+                        }
+                        if let message: AnyObject = commit["message"]{
+                            self.commitsTextView.insertText(message as! String)
+                            self.commitsTextView.insertText("\n\n")
+                        }
+                    }
+                    
+                    
+                }
+                
+                self.badgesLabel.text = "badges"
+                if self.isForked{
+                    let badges = net.searchBadges(detailName)
+                    var text = ""
+                    
+                    var myMutableString = NSMutableAttributedString()
+                    var initialPos = 0
+                    
+                    for var i = 0; i < badges.count; ++i{
+                        let badge: Badge = badges.objectAtIndex(i) as! Badge
+                        var name: NSString = badge.name
+                        var color: UIColor = self.hexStringToUIColor(badge.color)
+                        
+                        var c = NSMutableAttributedString(string: name as String, attributes: [NSFontAttributeName: self.badgesLabel.font!])
+                        myMutableString.appendAttributedString(c)
+                        myMutableString.appendAttributedString(NSAttributedString(string: (String("\n"))))
+                        myMutableString.addAttribute(NSBackgroundColorAttributeName, value: color, range:  NSRange(location: initialPos, length: name.length))
+                        initialPos += name.length + 1
+                        
+                    }
+                    if myMutableString.string != ""{
+                        self.badgesLabel.attributedText = myMutableString
+                    }
+                }
+            }
+            self.finishedLoading()
+        }
+        
     }
     
     func hexStringToUIColor (hex:String) -> UIColor {
@@ -99,29 +158,6 @@ class DetailViewController: UIViewController {
         )
     }
     
-    
-    func setString(){
-        
-        var myMutableString = NSMutableAttributedString()
-        var myString:NSString = "badge1 badge2 badge3"
-        //Initialize the mutable string
-        myMutableString = NSMutableAttributedString(string: myString as String, attributes: [NSFontAttributeName:UIFont(name: "Georgia", size: 18.0)!])
-        
-        //Add more attributes here:
-        myMutableString.addAttribute(NSFontAttributeName, value: UIFont(name: "Chalkduster", size: 24.0)!, range: NSRange(location: 7,length: 5))
-        myMutableString.addAttribute(NSFontAttributeName, value: UIFont(name: "AmericanTypewriter-Bold", size: 18.0)!, range: NSRange(location:2,length:4))
-        myMutableString.addAttribute(NSForegroundColorAttributeName, value: UIColor.redColor(), range: NSRange(location:2,length:4))
-        
-        myMutableString.addAttribute(NSFontAttributeName, value: UIFont(name: "Georgia", size: 36.0)!, range: NSRange(location: 0, length: 1))
-        myMutableString.addAttribute(NSStrokeColorAttributeName, value: UIColor.blueColor(), range:  NSRange(location: 0, length: 1))
-        myMutableString.addAttribute(NSStrokeWidthAttributeName, value: 2, range: NSRange(location: 0, length: 1))
-        
-        myMutableString.addAttribute(NSBackgroundColorAttributeName, value: UIColor.greenColor(), range: NSRange(location: 0, length: myString.length))
-        //myLabel.backgroundColor = UIColor.grayColor()
-        
-        //Apply to the label
-        //myLabel.attributedText = myMutableString
-    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

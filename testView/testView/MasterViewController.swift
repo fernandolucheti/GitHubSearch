@@ -45,10 +45,11 @@ class MasterViewController: UITableViewController {
             var networkController = NetworkController()
             //repos = networkController.searchForkedRepositories("mackmobile", yourName: "fernandolucheti")
             //repos = networkController.searchRepository("mackmobile")
-            //dispatch_async(dispatch_get_main_queue()) {
+            dispatch_async(dispatch_get_main_queue()) {
+                self.yourRepos = networkController.searchYourRepo()
                 self.repos = networkController.searchRepository()
                 self.reloadData()
-            //}
+            }
             
 
         }
@@ -100,11 +101,19 @@ class MasterViewController: UITableViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showDetail" {
             if let indexPath = self.tableView.indexPathForSelectedRow() {
-                let object = repos.objectAtIndex(indexPath.row) as! NSDictionary
-                let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
-                controller.detailItem = object
-                controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
-                controller.navigationItem.leftItemsSupplementBackButton = true
+                if indexPath.section == 0{
+                    let object = yourRepos.objectAtIndex(indexPath.row) as! NSDictionary
+                    let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
+                    controller.detailItem = object
+                    controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+                    controller.navigationItem.leftItemsSupplementBackButton = true
+                }else{
+                    let object = repos.objectAtIndex(indexPath.row) as! NSDictionary
+                    let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
+                    controller.detailItem = object
+                    controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+                    controller.navigationItem.leftItemsSupplementBackButton = true
+                }
             }
         }
     }
@@ -112,21 +121,50 @@ class MasterViewController: UITableViewController {
     // MARK: - Table View
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Forked from MackMobile"
+        switch section{
+            case 0:
+                return "My repositories"
+            case 1:
+                return "Forked from MackMobile"
+            default:
+                return ""
+        }
+        
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return repos.count
+        if repos == nil{
+            repos = NSMutableArray()
+        }
+        if yourRepos == nil{
+            yourRepos = NSMutableArray()
+        }
+        switch section{
+        case 0:
+            return yourRepos.count
+        case 1:
+            return repos.count
+        default:
+            return 0
+        }
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! UITableViewCell
         
-        cell.textLabel!.text = repos.objectAtIndex(indexPath.row)["name"] as? String
+        switch indexPath.section{
+        case 0:
+            cell.textLabel!.text = yourRepos.objectAtIndex(indexPath.row)["name"] as? String
+        case 1:
+            cell.textLabel!.text = repos.objectAtIndex(indexPath.row)["name"] as? String
+        default:
+            return cell
+        }
+        
         
         return cell
     }
