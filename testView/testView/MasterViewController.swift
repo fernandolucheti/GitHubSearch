@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class MasterViewController: UITableViewController {
 
@@ -27,6 +28,7 @@ class MasterViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         
         //let notificationCenter = NSNotificationCenter.defaultCenter()
         //notificationCenter.addObserver(self, selector: "reloadData", name: "webDataReceived", object: nil)
