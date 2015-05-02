@@ -15,7 +15,6 @@ class MasterViewController: UITableViewController {
     var objects = [AnyObject]()
     var repos: NSMutableArray!
     var yourRepos: NSMutableArray!
-    var loadingView: UIView?
     var activityIndicator: UIActivityIndicatorView?
 
     override func awakeFromNib() {
@@ -36,10 +35,7 @@ class MasterViewController: UITableViewController {
         self.loading()
         
         // Do any additional setup after loading the view, typically from a nib.
-        self.navigationItem.leftBarButtonItem = self.editButtonItem()
-
-        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "insertNewObject:")
-        self.navigationItem.rightBarButtonItem = addButton
+        
         if let split = self.splitViewController {
             let controllers = split.viewControllers
             self.detailViewController = controllers[controllers.count-1].topViewController as? DetailViewController
@@ -60,31 +56,20 @@ class MasterViewController: UITableViewController {
     
     func loading(){
         
-        if self.loadingView == nil{
-            self.loadingView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height))
-            self.loadingView?.center = CGPointMake(self.view.center.x, self.view.center.y)
-            self.loadingView?.backgroundColor = UIColor.blackColor()
-            self.loadingView?.alpha = 0.5
-            
-        }
-        self.view.addSubview(self.loadingView!)
         if self.activityIndicator == nil {
-
-            self.activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
+            self.activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
             self.activityIndicator!.alpha = 1
-            self.activityIndicator!.hidesWhenStopped = false
-            self.activityIndicator!.center = CGPointMake(self.view.center.x, self.view.center.y)
-            
+            self.activityIndicator!.hidesWhenStopped = true
         }
-        self.loadingView!.addSubview(activityIndicator!)
+        let activityItem = UIBarButtonItem(customView: self.activityIndicator!)
+        self.navigationItem.rightBarButtonItem = activityItem
         self.activityIndicator!.startAnimating()
         
     }
     
     
     func finishedLoading(){
-        self.loadingView?.removeFromSuperview()
-        self.activityIndicator!.removeFromSuperview()
+        self.activityIndicator!.stopAnimating()
     }
     
     
@@ -129,9 +114,9 @@ class MasterViewController: UITableViewController {
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section{
             case 0:
-                return "My repositories"
+                return "Meus Repositórios"
             case 1:
-                return "Forked from MackMobile"
+                return "Pulls do MackMobile"
             default:
                 return ""
         }
@@ -174,6 +159,10 @@ class MasterViewController: UITableViewController {
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return false
+    }
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 80
     }
 
 }

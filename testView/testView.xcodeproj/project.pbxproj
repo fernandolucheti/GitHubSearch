@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		173F8EFD1AF57854008B224C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173F8EFC1AF57854008B224C /* User.swift */; };
 		17A198EE1AEFD71400BBB899 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A198ED1AEFD71400BBB899 /* Connection.swift */; };
 		5C2ADCC31AF56F6900BE852D /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5C2ADCC11AF56F6900BE852D /* Model.xcdatamodeld */; };
 		5C2ADCC51AF5759000BE852D /* Commit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2ADCC41AF5759000BE852D /* Commit.swift */; };
 		5C2ADCC71AF5759000BE852D /* BadgeGit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2ADCC61AF5759000BE852D /* BadgeGit.swift */; };
 		5C2ADCC91AF5759000BE852D /* GitHubRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2ADCC81AF5759000BE852D /* GitHubRepo.swift */; };
 		5C2ADCCB1AF5763800BE852D /* persistenceHelp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2ADCCA1AF5763800BE852D /* persistenceHelp.swift */; };
-		5C2ADCCD1AF5765200BE852D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2ADCCC1AF5765200BE852D /* User.swift */; };
 		8B18F8E91AF55C5900D006CA /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B18F8E81AF55C5900D006CA /* Repository.swift */; };
 		8B610A4F1AEE80F9007340CF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B610A4E1AEE80F9007340CF /* AppDelegate.swift */; };
 		8B610A511AEE80F9007340CF /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B610A501AEE80F9007340CF /* MasterViewController.swift */; };
@@ -38,13 +38,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		173F8EFC1AF57854008B224C /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		17A198ED1AEFD71400BBB899 /* Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		5C2ADCC21AF56F6900BE852D /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		5C2ADCC41AF5759000BE852D /* Commit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Commit.swift; path = ../Commit.swift; sourceTree = "<group>"; };
 		5C2ADCC61AF5759000BE852D /* BadgeGit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BadgeGit.swift; path = ../BadgeGit.swift; sourceTree = "<group>"; };
 		5C2ADCC81AF5759000BE852D /* GitHubRepo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GitHubRepo.swift; path = ../GitHubRepo.swift; sourceTree = "<group>"; };
 		5C2ADCCA1AF5763800BE852D /* persistenceHelp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = persistenceHelp.swift; sourceTree = "<group>"; };
-		5C2ADCCC1AF5765200BE852D /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		8B18F8E81AF55C5900D006CA /* Repository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		8B610A491AEE80F9007340CF /* testView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B610A4D1AEE80F9007340CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -104,7 +104,6 @@
 				5C2ADCC81AF5759000BE852D /* GitHubRepo.swift */,
 				5C2ADCC61AF5759000BE852D /* BadgeGit.swift */,
 				5C2ADCC41AF5759000BE852D /* Commit.swift */,
-				5C2ADCCC1AF5765200BE852D /* User.swift */,
 				8BCE8C091AF524C300447936 /* Badge.swift */,
 				8B18F8E81AF55C5900D006CA /* Repository.swift */,
 				8B610A721AEE96FD007340CF /* SwiftyJSON.swift */,
@@ -123,6 +122,7 @@
 		8B610A4C1AEE80F9007340CF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				173F8EFC1AF57854008B224C /* User.swift */,
 				8B610A4E1AEE80F9007340CF /* AppDelegate.swift */,
 				8B610A571AEE80F9007340CF /* Images.xcassets */,
 				8B610A591AEE80F9007340CF /* LaunchScreen.xib */,
@@ -254,7 +254,7 @@
 				8BCE8C0A1AF524C300447936 /* Badge.swift in Sources */,
 				5C2ADCC51AF5759000BE852D /* Commit.swift in Sources */,
 				17A198EE1AEFD71400BBB899 /* Connection.swift in Sources */,
-				5C2ADCCD1AF5765200BE852D /* User.swift in Sources */,
+				173F8EFD1AF57854008B224C /* User.swift in Sources */,
 				8B610A531AEE80F9007340CF /* DetailViewController.swift in Sources */,
 				8B610A511AEE80F9007340CF /* MasterViewController.swift in Sources */,
 				8B610A731AEE96FD007340CF /* SwiftyJSON.swift in Sources */,

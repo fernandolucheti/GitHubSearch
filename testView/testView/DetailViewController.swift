@@ -12,7 +12,6 @@ import UIKit
 
 class DetailViewController: UIViewController {
     
-    var loadingView: UIView?
     var activityIndicator: UIActivityIndicatorView?
 
     @IBOutlet weak var detailDescriptionLabel: UILabel!
@@ -29,31 +28,20 @@ class DetailViewController: UIViewController {
     
     func loading(){
         
-        if self.loadingView == nil{
-            self.loadingView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height))
-            self.loadingView?.center = CGPointMake(self.view.center.x, self.view.center.y)
-            self.loadingView?.backgroundColor = UIColor.blackColor()
-            self.loadingView?.alpha = 0.5
-            
-        }
-        self.view.addSubview(self.loadingView!)
         if self.activityIndicator == nil {
-            
-            self.activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
+            self.activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
             self.activityIndicator!.alpha = 1
-            self.activityIndicator!.hidesWhenStopped = false
-            self.activityIndicator!.center = CGPointMake(self.view.center.x, self.view.center.y)
-            
+            self.activityIndicator!.hidesWhenStopped = true
         }
-        self.loadingView!.addSubview(activityIndicator!)
+        let activityItem = UIBarButtonItem(customView: self.activityIndicator!)
+        self.navigationItem.rightBarButtonItem = activityItem
         self.activityIndicator!.startAnimating()
         
     }
     
     
     func finishedLoading(){
-        self.loadingView?.removeFromSuperview()
-        self.activityIndicator!.removeFromSuperview()
+        self.activityIndicator!.stopAnimating()
     }
     
     func configureView() {
