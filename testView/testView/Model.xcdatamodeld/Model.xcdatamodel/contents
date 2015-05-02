@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14D136" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="BadgeGit" representedClassName="PRODUCT_MODULE_NAME.BadgeGit" syncable="YES">
+        <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="pertence" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GitHubRepo" inverseName="tem" inverseEntity="GitHubRepo" syncable="YES"/>
+    </entity>
+    <entity name="Commit" representedClassName="PRODUCT_MODULE_NAME.Commit" syncable="YES">
+        <attribute name="descricao" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dono" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="eParteDe" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GitHubRepo" inverseName="possui" inverseEntity="GitHubRepo" syncable="YES"/>
+    </entity>
+    <entity name="GitHubRepo" representedClassName="PRODUCT_MODULE_NAME.GitHubRepo" syncable="YES">
+        <attribute name="nomeRepo" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="possui" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Commit" inverseName="eParteDe" inverseEntity="Commit" syncable="YES"/>
+        <relationship name="tem" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BadgeGit" inverseName="pertence" inverseEntity="BadgeGit" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="GitHubRepo" positionX="-63" positionY="-18" width="128" height="90"/>
+        <element name="Commit" positionX="-54" positionY="0" width="128" height="90"/>
+        <element name="BadgeGit" positionX="-36" positionY="9" width="128" height="90"/>
+    </elements>
+</model>
