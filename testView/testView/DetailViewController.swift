@@ -115,7 +115,7 @@ class DetailViewController: UIViewController {
                     var initialPos = 0
                     
                     for var i = 0; i < badges.count; ++i{
-                        let badge: Badge = badges.objectAtIndex(i) as! Badge
+                        let badge: Badge2 = badges.objectAtIndex(i) as! Badge2
                         var name: NSString = badge.name
                         var color: UIColor = self.hexStringToUIColor(badge.color)
                         
