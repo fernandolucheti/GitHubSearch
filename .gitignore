@@ -16,9 +16,19 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-*.DS_Store
 testView/testView/User.swift
 iHub/iHub/User.swift
+
+__MACOSX
+.DS_Store
+
+# OS generated files #
+######################
+*/.DS_Store
+.DS_Store
+.DS_Store?
+
+
 
 # CocoaPods
 #
