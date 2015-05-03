@@ -50,6 +50,28 @@ public class CommitManager {
         return Array<Commit>()
     }
     
+    func removeCommitFrom(repoName: String){
+        var fetchRequest = NSFetchRequest(entityName: CommitManager.entityName)
+        fetchRequest.returnsObjectsAsFaults = false
+        var results: NSArray = managedContext.executeFetchRequest(fetchRequest, error: nil)!
+        
+        if(results.count>0){
+            for var i = 0; i < results.count; ++i{
+                var commit = results.objectAtIndex(i) as! Commit
+                if commit.repository.name == repoName{
+                    var res = results[i] as! NSManagedObject
+                    managedContext.deleteObject(res)
+                    managedContext.save(nil)
+                }
+                
+            }
+            
+        }
+        
+        
+    }
+
+    
     func removeAll()->Bool{
         
         var fetchRequest = NSFetchRequest(entityName: CommitManager.entityName)

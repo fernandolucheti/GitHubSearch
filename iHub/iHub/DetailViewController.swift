@@ -18,6 +18,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var badgesLabel: UILabel!
     @IBOutlet weak var commitsTextView: UITextView!
     
+    var addButton: UIBarButtonItem!
+    
     var detailName: String!
     var counterForFinishLoading = 0
     
@@ -47,6 +49,7 @@ class DetailViewController: UIViewController {
     func finishedLoading(){
         if counterForFinishLoading > 1{
             self.activityIndicator!.stopAnimating()
+            self.navigationItem.rightBarButtonItem = addButton
         }
         
     }
@@ -102,9 +105,29 @@ class DetailViewController: UIViewController {
         
     }
     
+    func refresh(){
+        commitsTextView.text = ""
+        badgesLabel.text = "Badges"
+        counterForFinishLoading = 0
+        self.loading()
+        searchCommits()
+        
+        
+        if isForked == 1{
+            self.loading()
+            searchBadges()
+        }else{
+            counterForFinishLoading++
+        }
+    }
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        
+        addButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: "refresh")
+        self.navigationItem.rightBarButtonItem = addButton
+        
         // Do any additional setup after loading the view, typically from a nib.
         self.configureView()
         let net = NetworkController()
@@ -127,6 +150,7 @@ class DetailViewController: UIViewController {
             getCommitsFromLocalStore()
         }else{
             self.loading()
+            
             searchCommits()
         }
         
@@ -147,10 +171,13 @@ class DetailViewController: UIViewController {
     }
     
     func searchCommits(){
+        CommitManager.sharedInstance.removeCommitFrom(self.repository!.name)
         let net = NetworkController()
         dispatch_async(dispatch_get_main_queue()) {
             if self.detailName != ""{
                 let commits = net.searchCommits(self.detailName)
+
+                
                 for var i = 0; i < commits.count; ++i{
                     
                     
@@ -162,25 +189,30 @@ class DetailViewController: UIViewController {
                             if let authorName: AnyObject = author["name"]{
                                 
                                 autName = authorName as! String
-                                self.commitsTextView.insertText(authorName as! String)
-                                self.commitsTextView.insertText("\n")
+                                //self.commitsTextView.insertText(authorName as! String)
+                                //self.commitsTextView.insertText("\n")
                             }
                         }
                         if let message: AnyObject = commit["message"]{
                             commitMessage = message as! String
-                            self.commitsTextView.insertText(message as! String)
-                            self.commitsTextView.insertText("\n\n")
+                            //self.commitsTextView.insertText(message as! String)
+                            //self.commitsTextView.insertText("\n\n")
                         }
                     }
                     
+                    
+                    
                     if autName != "" && commitMessage != ""{
+                        
 
-                        var commitx = CommitManager.sharedInstance.newCommit()
-                        commitx.owner = autName
-                        commitx.descriptionText = commitMessage
-                        commitx.repository = self.repository!
-                        CommitManager.sharedInstance.save()
-
+                            var commitx = CommitManager.sharedInstance.newCommit()
+                            commitx.owner = autName
+                            commitx.descriptionText = commitMessage
+                            commitx.repository = self.repository!
+                        
+                            CommitManager.sharedInstance.save()
+                            
+                        
                     }
                     
                     
@@ -188,6 +220,7 @@ class DetailViewController: UIViewController {
                 
                 
             }
+            self.getCommitsFromLocalStore()
             self.counterForFinishLoading++
             self.finishedLoading()
         }

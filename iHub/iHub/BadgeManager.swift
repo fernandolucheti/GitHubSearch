@@ -50,6 +50,29 @@ public class BadgeManager {
         return Array<Badge>()
     }
     
+    func removeBadgeFrom(repoName: String){
+        var fetchRequest = NSFetchRequest(entityName: BadgeManager.entityName)
+        fetchRequest.returnsObjectsAsFaults = false
+        var results: NSArray = managedContext.executeFetchRequest(fetchRequest, error: nil)!
+        
+        if(results.count>0){
+            for var i = 0; i < results.count; ++i{
+                var badge = results.objectAtIndex(i) as! Badge
+                if badge.repository.name == repoName{
+                    var res = results[i] as! NSManagedObject
+                    managedContext.deleteObject(res)
+                    managedContext.save(nil)
+                }
+                
+            }
+            
+        }
+        
+        
+    }
+    
+    
+    
     
     func removeAll()->Bool{
         
