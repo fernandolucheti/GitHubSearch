@@ -18,6 +18,7 @@ DerivedData
 *.xcuserstate
 testView/testView/User.swift
 iHub/iHub/User.swift
+*/User.swift
 
 __MACOSX
 .DS_Store
