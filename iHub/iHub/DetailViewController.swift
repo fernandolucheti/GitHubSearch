@@ -56,12 +56,41 @@ class DetailViewController: UIViewController {
     
     func getCommitsFromLocalStore(){
         var commits = repository!.commits.allObjects
+        var initialPos = 0
+        var myMutableString = NSMutableAttributedString()
         for var i = 0; i < commits.count; ++i{
             var commit = commits[i] as! Commit
-            self.commitsTextView.insertText(commit.owner)
-            self.commitsTextView.insertText("\n")
-            self.commitsTextView.insertText(commit.descriptionText)
-            self.commitsTextView.insertText("\n\n")
+            //self.commitsTextView.insertText(commit.owner)
+            //self.commitsTextView.insertText("\n")
+            //self.commitsTextView.insertText(commit.descriptionText)
+            //self.commitsTextView.insertText("\n\n")
+            
+
+                
+            var owner: NSString = commit.owner
+            var description: NSString = commit.descriptionText
+            
+            var ownerName = NSMutableAttributedString(string: owner as String, attributes: [NSFontAttributeName: self.commitsTextView.font!])
+            myMutableString.appendAttributedString(ownerName)
+            myMutableString.appendAttributedString(NSAttributedString(string: (String("\n"))))
+            myMutableString.addAttribute(NSFontAttributeName, value: UIFont(name: "AmericanTypewriter-Bold", size: 14.0)!, range: NSRange(location: initialPos, length: ownerName.length + 1))
+            myMutableString.addAttribute(NSForegroundColorAttributeName, value: UIColor.blueColor(), range:  NSRange(location: initialPos, length: owner.length))
+            initialPos += owner.length + 1
+            
+            
+            
+            var descriptText = NSMutableAttributedString(string: description as String, attributes: [NSFontAttributeName: self.commitsTextView.font!])
+            myMutableString.appendAttributedString(descriptText)
+            myMutableString.appendAttributedString(NSAttributedString(string: (String("\n\n"))))
+            myMutableString.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range:  NSRange(location: initialPos, length: descriptText.length))
+            initialPos += descriptText.length + 2
+            
+                
+                if myMutableString.string != ""{
+                    self.commitsTextView.attributedText = myMutableString
+                }
+                
+            
         }
     }
     
@@ -139,8 +168,7 @@ class DetailViewController: UIViewController {
                 isForked = Int(detail.forked)
         }
         
-        println(repository!.commits.allObjects.count)
-        
+
         commitsTextView.text = ""
         
         
