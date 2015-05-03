@@ -95,13 +95,14 @@ class NetworkController: UIViewController {
             let urlPull = "https://api.github.com/repos/mackmobile/\(nomeRepo)/issues/\(number)"
             let userPull = conn.connectOne(user.username, password: user.password, urlBusca: urlPull)
             if let labels: AnyObject = userPull["labels"] as? NSArray {
-                BadgeManager.sharedInstance.removeAll()
+//                BadgeManager.sharedInstance.removeAll()
                 for var i=0; i<labels.count; i++ {
                     var badge = BadgeManager.sharedInstance.newBadge()
                     badge.name = labels[i]["name"] as! String
                     badge.color = labels[i]["color"] as! String
                     badges.addObject(badge)
-                    BadgeManager.sharedInstance.save()
+                    
+//                    BadgeManager.sharedInstance.save()
                 }
             }
         }

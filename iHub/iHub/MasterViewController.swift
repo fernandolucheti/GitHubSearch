@@ -74,7 +74,7 @@ class MasterViewController: UITableViewController, UITableViewDataSource {
             self.activityIndicator!.hidesWhenStopped = true
         }
         let activityItem = UIBarButtonItem(customView: self.activityIndicator!)
-        self.navigationItem.rightBarButtonItem = activityItem
+        self.navigationItem.leftBarButtonItem = activityItem
         self.activityIndicator!.startAnimating()
         
     }
@@ -101,7 +101,7 @@ class MasterViewController: UITableViewController, UITableViewDataSource {
             if let indexPath = self.tableView.indexPathForSelectedRow() {
                 let object:Repository = self.repositories[indexPath.row]
                 let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
-                controller.detailItem = object
+                controller.repository = object
                 controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
                 controller.navigationItem.leftItemsSupplementBackButton = true
             }

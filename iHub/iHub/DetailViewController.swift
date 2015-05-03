@@ -18,13 +18,17 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var badgesLabel: UILabel!
     @IBOutlet weak var commitsTextView: UITextView!
     
+    var detailName: String!
+    var counterForFinishLoading = 0
     
-    var detailItem: Repository? {
+    var repository: Repository? {
         didSet {
             // Update the view.
             self.configureView()
         }
     }
+    
+    
     
     func loading(){
         
@@ -39,61 +43,165 @@ class DetailViewController: UIViewController {
         
     }
     
-    
+
     func finishedLoading(){
-        self.activityIndicator!.stopAnimating()
+        if counterForFinishLoading > 1{
+            self.activityIndicator!.stopAnimating()
+        }
+        
     }
     
+    func getCommitsFromLocalStore(){
+        var commits = repository!.commits.allObjects
+        for var i = 0; i < commits.count; ++i{
+            var commit = commits[i] as! Commit
+            self.commitsTextView.insertText(commit.owner)
+            self.commitsTextView.insertText("\n")
+            self.commitsTextView.insertText(commit.descriptionText)
+            self.commitsTextView.insertText("\n\n")
+        }
+    }
+    
+    func getBadgesFromLocalStore(){
+        var badges = repository!.badges.allObjects
+        var myMutableString = NSMutableAttributedString()
+        var initialPos = 0
+        for var i = 0; i < badges.count; ++i{
+            var badge = badges[i] as! Badge
+            
+            var name: NSString = badge.name
+            var color: UIColor = self.hexStringToUIColor(badge.color)
+            
+            
+            var c = NSMutableAttributedString(string: name as String, attributes: [NSFontAttributeName: self.badgesLabel.font!])
+            myMutableString.appendAttributedString(c)
+            myMutableString.appendAttributedString(NSAttributedString(string: (String("\n"))))
+            myMutableString.addAttribute(NSBackgroundColorAttributeName, value: color, range:  NSRange(location: initialPos, length: name.length))
+            initialPos += name.length + 1
+            
+        
+        if myMutableString.string != ""{
+            self.badgesLabel.attributedText = myMutableString
+        }
+        
+        }
+    }
+
     func configureView() {
         // Update the user interface for the detail item.
-        if let detail: Repository = self.detailItem {
+        if let detail: Repository = self.repository {
             if let label = self.detailDescriptionLabel {
                 label.text = detail.name
             }
         }
     }
     var isForked = 0
+    
+    override func viewWillAppear(animated: Bool) {
+        
+        
+    }
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.configureView()
         let net = NetworkController()
-        var detailName = String()
-        if let detail: Repository = self.detailItem {
+        detailName = String()
+        if let detail: Repository = self.repository {
             if let label = self.detailDescriptionLabel {
                 detailName = detail.name
             }
                 isForked = Int(detail.forked)
         }
         
-        commitsTextView.text = ""
-        self.loading()
+        println(repository!.commits.allObjects.count)
         
+        commitsTextView.text = ""
+        
+        
+        
+        
+        if repository!.commits.allObjects.count > 0 {
+            getCommitsFromLocalStore()
+        }else{
+            self.loading()
+            searchCommits()
+        }
+        
+        if repository!.badges.allObjects.count > 0{
+            getBadgesFromLocalStore()
+            counterForFinishLoading++
+        }else{
+            if isForked == 1{
+                self.loading()
+                searchBadges()
+            }else{
+                counterForFinishLoading++
+            }
+            
+        }
+        
+        
+    }
+    
+    func searchCommits(){
+        let net = NetworkController()
         dispatch_async(dispatch_get_main_queue()) {
-            if detailName != ""{
-                let commits = net.searchCommits(detailName)
-                
+            if self.detailName != ""{
+                let commits = net.searchCommits(self.detailName)
                 for var i = 0; i < commits.count; ++i{
+                    
+                    
+                    var autName = String()
+                    var commitMessage = String()
                     
                     if let commit: AnyObject = commits.objectAtIndex(i)["commit"]{
                         if let author: AnyObject = commit["author"]{
                             if let authorName: AnyObject = author["name"]{
+                                
+                                autName = authorName as! String
                                 self.commitsTextView.insertText(authorName as! String)
                                 self.commitsTextView.insertText("\n")
                             }
                         }
                         if let message: AnyObject = commit["message"]{
+                            commitMessage = message as! String
                             self.commitsTextView.insertText(message as! String)
                             self.commitsTextView.insertText("\n\n")
                         }
                     }
                     
+                    if autName != "" && commitMessage != ""{
+
+                        var commitx = CommitManager.sharedInstance.newCommit()
+                        commitx.owner = autName
+                        commitx.descriptionText = commitMessage
+                        commitx.repository = self.repository!
+                        CommitManager.sharedInstance.save()
+
+                    }
+                    
                     
                 }
                 
+                
+            }
+            self.counterForFinishLoading++
+            self.finishedLoading()
+        }
+
+    }
+    
+    func searchBadges(){
+        let net = NetworkController()
+        dispatch_async(dispatch_get_main_queue()) {
+            if self.detailName != ""{
                 if self.isForked == 1{
-                    let badges = net.searchBadges(detailName)
+                    
+                    
+                    let badges = net.searchBadges(self.detailName)
                     var text = ""
                     
                     var myMutableString = NSMutableAttributedString()
@@ -103,6 +211,12 @@ class DetailViewController: UIViewController {
                         let badge: Badge = badges.objectAtIndex(i) as! Badge
                         var name: NSString = badge.name
                         var color: UIColor = self.hexStringToUIColor(badge.color)
+                        
+                        
+                        var badgex = BadgeManager.sharedInstance.newBadge()
+                        badgex = badges.objectAtIndex(i) as! Badge
+                        badgex.repository = self.repository!
+                        BadgeManager.sharedInstance.save()
                         
                         var c = NSMutableAttributedString(string: name as String, attributes: [NSFontAttributeName: self.badgesLabel.font!])
                         myMutableString.appendAttributedString(c)
@@ -116,6 +230,7 @@ class DetailViewController: UIViewController {
                     }
                 }
             }
+            self.counterForFinishLoading++
             self.finishedLoading()
         }
         
