@@ -11,6 +11,7 @@
 		8B1318691AF5C5B7007E75ED /* Badge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1318661AF5C5B7007E75ED /* Badge.swift */; };
 		8B13186A1AF5C5B7007E75ED /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1318671AF5C5B7007E75ED /* Repository.swift */; };
 		8B13186C1AF5DEE4007E75ED /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B13186B1AF5DEE4007E75ED /* Images.xcassets */; };
+		8B1318701AF5EFF1007E75ED /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B13186F1AF5EFF1007E75ED /* User.swift */; };
 		8B8596B31AF5AD4A00195F14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8596B21AF5AD4A00195F14 /* AppDelegate.swift */; };
 		8B8596B61AF5AD4A00195F14 /* iHub.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8B8596B41AF5AD4A00195F14 /* iHub.xcdatamodeld */; };
 		8B8596B81AF5AD4A00195F14 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8596B71AF5AD4A00195F14 /* MasterViewController.swift */; };
@@ -41,6 +42,7 @@
 		8B1318661AF5C5B7007E75ED /* Badge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Badge.swift; sourceTree = "<group>"; };
 		8B1318671AF5C5B7007E75ED /* Repository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		8B13186B1AF5DEE4007E75ED /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		8B13186F1AF5EFF1007E75ED /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		8B8596AD1AF5AD4A00195F14 /* iHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B8596B11AF5AD4A00195F14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8B8596B21AF5AD4A00195F14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				8B8596E41AF5B7F000195F14 /* Entity */,
 				8B8596DD1AF5B01600195F14 /* CoreData */,
 				8B8596B21AF5AD4A00195F14 /* AppDelegate.swift */,
+				8B13186F1AF5EFF1007E75ED /* User.swift */,
 				8B8596B71AF5AD4A00195F14 /* MasterViewController.swift */,
 				8B8596B91AF5AD4A00195F14 /* DetailViewController.swift */,
 				8B8596BB1AF5AD4A00195F14 /* Main.storyboard */,
@@ -275,6 +278,7 @@
 				8B8596E31AF5B06100195F14 /* CommitManager.swift in Sources */,
 				8B8596E71AF5B83000195F14 /* SwiftyJSON.swift in Sources */,
 				8B8596B61AF5AD4A00195F14 /* iHub.xcdatamodeld in Sources */,
+				8B1318701AF5EFF1007E75ED /* User.swift in Sources */,
 				8B13186A1AF5C5B7007E75ED /* Repository.swift in Sources */,
 				8B8596DF1AF5B03600195F14 /* RepositoryManager.swift in Sources */,
 				8B8596E91AF5B83700195F14 /* NetworkController.swift in Sources */,
