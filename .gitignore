@@ -17,6 +17,7 @@ DerivedData
 *.ipa
 *.xcuserstate
 testView/testView/User.swift
+iHub/iHub/User.swift
 
 # CocoaPods
 #
