@@ -20,6 +20,7 @@ class MasterViewController: UITableViewController, UITableViewDataSource {
     var yourRepos: NSMutableArray!
     var forkedRepos: NSMutableArray!
     var activityIndicator: UIActivityIndicatorView?
+    var loadingView: UIView?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -79,25 +80,39 @@ class MasterViewController: UITableViewController, UITableViewDataSource {
     func loadRepositories(){
         
         self.loading()
-        var networkController = NetworkController()
         
         
-        dispatch_async(dispatch_get_main_queue()) {
+        
+        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+            var networkController = NetworkController()
             
+            networkController.searchYourRepo()
             self.yourRepos = NSMutableArray()
             self.forkedRepos = NSMutableArray()
-            networkController.searchYourRepo()
-            //self.repos = networkController.searchRepository()
             self.repositories = RepositoryManager.sharedInstance.findRepositories()
             self.splitRepositories()
-            self.tableView.reloadData()
-            self.finishedLoading()
+            dispatch_async(dispatch_get_main_queue()) {
+                self.tableView.reloadData()
+                self.finishedLoading()
+            }
         }
+        
         
     }
     
     
     func loading(){
+        
+        if self.loadingView == nil{
+                    self.loadingView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height))
+                       self.loadingView?.center = CGPointMake(self.view.center.x, self.view.center.y)
+                        self.loadingView?.backgroundColor = UIColor.blackColor()
+                        self.loadingView?.alpha = 0.5
+            
+                   }
+                self.view.addSubview(self.loadingView!)
+        
         
         if self.activityIndicator == nil {
             self.activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
@@ -112,8 +127,9 @@ class MasterViewController: UITableViewController, UITableViewDataSource {
     
     
     func finishedLoading(){
+        self.loadingView?.removeFromSuperview()
         self.activityIndicator!.stopAnimating()
-        self.navigationItem.rightBarButtonItem = addButton
+
     }
     
 

@@ -201,10 +201,13 @@ class DetailViewController: UIViewController {
     func searchCommits(){
         CommitManager.sharedInstance.removeCommitFrom(self.repository!.name)
         let net = NetworkController()
-        dispatch_async(dispatch_get_main_queue()) {
+        
+        
+        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
             if self.detailName != ""{
                 let commits = net.searchCommits(self.detailName)
-
+                
                 
                 for var i = 0; i < commits.count; ++i{
                     
@@ -232,14 +235,14 @@ class DetailViewController: UIViewController {
                     
                     if autName != "" && commitMessage != ""{
                         
-
-                            var commitx = CommitManager.sharedInstance.newCommit()
-                            commitx.owner = autName
-                            commitx.descriptionText = commitMessage
-                            commitx.repository = self.repository!
                         
-                            CommitManager.sharedInstance.save()
-                            
+                        var commitx = CommitManager.sharedInstance.newCommit()
+                        commitx.owner = autName
+                        commitx.descriptionText = commitMessage
+                        commitx.repository = self.repository!
+                        
+                        CommitManager.sharedInstance.save()
+                        
                         
                     }
                     
@@ -248,52 +251,64 @@ class DetailViewController: UIViewController {
                 
                 
             }
-            self.getCommitsFromLocalStore()
-            self.counterForFinishLoading++
-            self.finishedLoading()
+            dispatch_async(dispatch_get_main_queue()) {
+                
+                
+                self.getCommitsFromLocalStore()
+                self.counterForFinishLoading++
+                self.finishedLoading()
+            }
         }
+        
+        
 
     }
     
     func searchBadges(){
         let net = NetworkController()
-        dispatch_async(dispatch_get_main_queue()) {
-            if self.detailName != ""{
-                if self.isForked == 1{
-                    
-                    
-                    let badges = net.searchBadges(self.detailName)
-                    var text = ""
-                    
-                    var myMutableString = NSMutableAttributedString()
-                    var initialPos = 0
-                    
-                    for var i = 0; i < badges.count; ++i{
-                        let badge: Badge = badges.objectAtIndex(i) as! Badge
-                        var name: NSString = badge.name
-                        var color: UIColor = self.hexStringToUIColor(badge.color)
+        
+        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+            let badges = net.searchBadges(self.detailName)
+            dispatch_async(dispatch_get_main_queue()) {
+                if self.detailName != ""{
+                    if self.isForked == 1{
                         
                         
-                        var badgex = BadgeManager.sharedInstance.newBadge()
-                        badgex = badges.objectAtIndex(i) as! Badge
-                        badgex.repository = self.repository!
-                        BadgeManager.sharedInstance.save()
                         
-                        var c = NSMutableAttributedString(string: name as String, attributes: [NSFontAttributeName: self.badgesLabel.font!])
-                        myMutableString.appendAttributedString(c)
-                        myMutableString.appendAttributedString(NSAttributedString(string: (String("\n"))))
-                        myMutableString.addAttribute(NSBackgroundColorAttributeName, value: color, range:  NSRange(location: initialPos, length: name.length))
-                        initialPos += name.length + 1
+                        var text = ""
                         
-                    }
-                    if myMutableString.string != ""{
-                        self.badgesLabel.attributedText = myMutableString
+                        var myMutableString = NSMutableAttributedString()
+                        var initialPos = 0
+                        
+                        for var i = 0; i < badges.count; ++i{
+                            let badge: Badge = badges.objectAtIndex(i) as! Badge
+                            var name: NSString = badge.name
+                            var color: UIColor = self.hexStringToUIColor(badge.color)
+                            
+                            
+                            var badgex = BadgeManager.sharedInstance.newBadge()
+                            badgex = badges.objectAtIndex(i) as! Badge
+                            badgex.repository = self.repository!
+                            BadgeManager.sharedInstance.save()
+                            
+                            var c = NSMutableAttributedString(string: name as String, attributes: [NSFontAttributeName: self.badgesLabel.font!])
+                            myMutableString.appendAttributedString(c)
+                            myMutableString.appendAttributedString(NSAttributedString(string: (String("\n"))))
+                            myMutableString.addAttribute(NSBackgroundColorAttributeName, value: color, range:  NSRange(location: initialPos, length: name.length))
+                            initialPos += name.length + 1
+                            
+                        }
+                        if myMutableString.string != ""{
+                            self.badgesLabel.attributedText = myMutableString
+                        }
                     }
                 }
+                self.counterForFinishLoading++
+                self.finishedLoading()
             }
-            self.counterForFinishLoading++
-            self.finishedLoading()
         }
+        
         
     }
     
