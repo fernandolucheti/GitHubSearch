@@ -18,6 +18,7 @@ class MasterViewController: UITableViewController, UITableViewDataSource {
     var addButton: UIBarButtonItem!
     var repos: NSMutableArray!
     var yourRepos: NSMutableArray!
+    var forkedRepos: NSMutableArray!
     var activityIndicator: UIActivityIndicatorView?
 
     override func awakeFromNib() {
@@ -26,6 +27,32 @@ class MasterViewController: UITableViewController, UITableViewDataSource {
             self.clearsSelectionOnViewWillAppear = false
             self.preferredContentSize = CGSize(width: 320.0, height: 600.0)
         }
+    }
+    
+    func splitRepositories(){
+        
+        if yourRepos == nil{
+            yourRepos = NSMutableArray()
+        }
+        
+        if forkedRepos == nil{
+            forkedRepos = NSMutableArray()
+        }
+        
+        
+        for var i = 0; i < repositories.count; ++i{
+            var rep = repositories[i] as! Repository
+            if rep.name != ""{
+                var n: NSNumber = 0
+                if rep.forked as Int == 0{
+                    yourRepos.addObject(rep)
+                }else{
+                     forkedRepos.addObject(rep)
+                }
+            }
+        }
+
+        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -43,7 +70,7 @@ class MasterViewController: UITableViewController, UITableViewDataSource {
         if let split = self.splitViewController {
             let controllers = split.viewControllers
             self.detailViewController = controllers[controllers.count-1].topViewController as? DetailViewController
-
+            self.splitRepositories()
             loadRepositories()
 
         }
@@ -56,9 +83,13 @@ class MasterViewController: UITableViewController, UITableViewDataSource {
         
         
         dispatch_async(dispatch_get_main_queue()) {
-            self.yourRepos = networkController.searchYourRepo()
+            
+            self.yourRepos = NSMutableArray()
+            self.forkedRepos = NSMutableArray()
+            networkController.searchYourRepo()
             //self.repos = networkController.searchRepository()
             self.repositories = RepositoryManager.sharedInstance.findRepositories()
+            self.splitRepositories()
             self.tableView.reloadData()
             self.finishedLoading()
         }
@@ -99,11 +130,19 @@ class MasterViewController: UITableViewController, UITableViewDataSource {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showDetail" {
             if let indexPath = self.tableView.indexPathForSelectedRow() {
-                let object:Repository = self.repositories[indexPath.row]
-                let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
-                controller.repository = object
-                controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
-                controller.navigationItem.leftItemsSupplementBackButton = true
+                if indexPath.section == 0{
+                    let object = yourRepos[indexPath.row] as! Repository
+                    let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
+                    controller.repository = object
+                    controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+                    controller.navigationItem.leftItemsSupplementBackButton = true
+                }else{
+                    let object = forkedRepos[indexPath.row] as! Repository
+                    let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
+                    controller.repository = object
+                    controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+                    controller.navigationItem.leftItemsSupplementBackButton = true
+                }
             }
         }
     }
@@ -111,22 +150,60 @@ class MasterViewController: UITableViewController, UITableViewDataSource {
     // MARK: - Table View
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
 
+   
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section{
+        case 0:
+            return "Meus Repositórios"
+        case 1:
+            return "Pulls do MackMobile"
+        default:
+            return ""
+        }
+        
+    }
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return repositories.count
+        if forkedRepos == nil{
+            forkedRepos = NSMutableArray()
+        }
+        if yourRepos == nil{
+            yourRepos = NSMutableArray()
+        }
+        switch section{
+        case 0:
+            return yourRepos.count
+        case 1:
+            return forkedRepos.count
+        default:
+            return 0
+        }
     }
-
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let item:Repository = repositories[indexPath.row]
-        var cell:UITableViewCell = tableView.dequeueReusableCellWithIdentifier("Cell") as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! UITableViewCell
         
-        cell.textLabel?.text = item.name
+        switch indexPath.section{
+        case 0:
+            let repo = yourRepos.objectAtIndex(indexPath.row) as! Repository
+            cell.textLabel!.text = repo.name
+        case 1:
+            let repo = forkedRepos.objectAtIndex(indexPath.row) as! Repository
+            cell.textLabel!.text = repo.name
+        default:
+            return cell
+        }
+        
         
         return cell
     }
+    
+
+    
 
 //    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
 //        // Return false if you do not want the specified item to be editable.

@@ -12,10 +12,11 @@ import UIKit
 class NetworkController: UIViewController {
     let user = User()
     var yourRepos = NSMutableArray()
+    var forkedRepos = NSMutableArray()
     
     func searchRepository() -> NSMutableArray {
         let conn = Connection()
-        let array = self.searchYourRepo()
+        let array = yourRepos
         
         var arrayRepos = NSMutableArray()
         
@@ -27,30 +28,38 @@ class NetworkController: UIViewController {
                 if let owner: AnyObject = parent["owner"] {
                     if let login: AnyObject = owner["login"] {
                         if login as! String == "mackmobile" {
-                            arrayRepos.addObject(conRepo)
+                            forkedRepos.addObject(conRepo)
                             
                         }
                     }
                 }
             }
         }
-        return arrayRepos
+        
+        return forkedRepos
     }
     
-    func persistRepositories(){
+    
+    
+    func saveRepositories(){
         RepositoryManager.sharedInstance.removeAll()
         for var i = 0; i < yourRepos.count; ++i{
-            var repo = RepositoryManager.sharedInstance.newRepository()
-            repo.name = yourRepos.objectAtIndex(i)["name"] as! String
-            repo.forked = 0
-            var x: AnyObject = yourRepos.objectAtIndex(i)
+            
             if let fork: AnyObject = yourRepos.objectAtIndex(i)["fork"] as? Int{
                 if fork as! NSNumber == 0{
+                    var repo = RepositoryManager.sharedInstance.newRepository()
+                    repo.name = yourRepos.objectAtIndex(i)["name"] as! String
                     repo.forked = 0
-                }else{
-                    repo.forked = 1
+                    RepositoryManager.sharedInstance.save()
                 }
             }
+            
+        }
+        
+        for var j = 0; j < forkedRepos.count; ++j{
+            var repo = RepositoryManager.sharedInstance.newRepository()
+            repo.name = forkedRepos.objectAtIndex(j)["name"] as! String
+            repo.forked = 1
             RepositoryManager.sharedInstance.save()
         }
     }
@@ -65,9 +74,12 @@ class NetworkController: UIViewController {
         let conn = Connection()
         yourRepos = conn.connect(user.username, password: user.password, urlBusca: "https://api.github.com/users/\(user.username)/repos")
         
-        if RepositoryManager.sharedInstance.findRepositories().count != yourRepos.count{
-            persistRepositories()
+        searchRepository()
+        
+        if RepositoryManager.sharedInstance.findRepositories().count != yourRepos.count + forkedRepos.count{
+            saveRepositories()
         }
+        
         return yourRepos;
     }
     
