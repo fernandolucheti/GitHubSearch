@@ -13,10 +13,11 @@ class NetworkController: UIViewController {
     let user = User()
     var yourRepos = NSMutableArray()
     var forkedRepos = NSMutableArray()
+    var allRepos = NSMutableArray()
     
     func searchRepository() -> NSMutableArray {
         let conn = Connection()
-        let array = yourRepos
+        let array = allRepos
         
         var arrayRepos = NSMutableArray()
         
@@ -72,7 +73,15 @@ class NetworkController: UIViewController {
     
     func searchYourRepo() -> NSMutableArray{
         let conn = Connection()
-        yourRepos = conn.connect(user.username, password: user.password, urlBusca: "https://api.github.com/users/\(user.username)/repos")
+        allRepos = conn.connect(user.username, password: user.password, urlBusca: "https://api.github.com/users/\(user.username)/repos")
+        
+        for var i = 0; i < allRepos.count; ++i{
+            if let fork: AnyObject = allRepos.objectAtIndex(i)["fork"] as? Int{
+                if fork as! NSNumber == 0{
+                    yourRepos.addObject(allRepos.objectAtIndex(i))
+                }
+            }
+        }
         
         searchRepository()
         
